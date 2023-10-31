@@ -1,19 +1,19 @@
 package br.com.symon.userbase.model.api;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse {
+@Getter @Setter
+public class ValidationResult {
+
     @Builder.Default
     private Collection<ValidationError> errors = new ArrayList<>();
+
 }
