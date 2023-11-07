@@ -1,7 +1,7 @@
 package br.com.symon.userbase.controller.advice;
 
+import br.com.symon.userbase.model.api.ApiErrorResponse;
 import br.com.symon.userbase.model.api.ValidationError;
-import br.com.symon.userbase.model.api.ValidationResult;
 import br.com.symon.userbase.model.api.ApiResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -15,17 +15,24 @@ import reactor.core.publisher.Mono;
 
 @ControllerAdvice
 @Log4j2
-public class HibernateValidatorsControllerAdivice {
-
+public class HibernateValidatorsControllerAdvice {
 
     @ExceptionHandler(WebExchangeBindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Mono<ResponseEntity<ApiResponse>> handleNotFoundException(WebExchangeBindException ex) {
-        ApiResponse apiResponse = ApiResponse.builder().build();
+    public Mono<ResponseEntity<ApiErrorResponse>> handleNotFoundException(WebExchangeBindException ex) {
+        ApiErrorResponse errorResponse = new ApiErrorResponse();
         for (ObjectError error: ex.getAllErrors()) {
-            apiResponse.getErrors().add(ValidationError.builder().message(error.getDefaultMessage()).build());
+            errorResponse.errors().add(ValidationError.fromErrorMessage(error.getDefaultMessage()));
         }
-        return Mono.just(ResponseEntity.badRequest().body(apiResponse));
+        return Mono.just(ResponseEntity.badRequest().body(errorResponse));
+    }
+
+    @ExceptionHandler(ValidationError.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Mono<ResponseEntity<ApiErrorResponse>> handleValidationException(ValidationError ex) {
+        ApiErrorResponse errorResponse = new ApiErrorResponse();
+        errorResponse.errors().add(ex);
+        return Mono.just(ResponseEntity.badRequest().body(errorResponse));
     }
 
 }

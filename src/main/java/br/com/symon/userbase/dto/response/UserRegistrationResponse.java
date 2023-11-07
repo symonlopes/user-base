@@ -1,9 +1,9 @@
 package br.com.symon.userbase.dto.response;
 
+import br.com.symon.userbase.model.api.ApiResponse;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@Builder
-public class UserRegistrationResponse {
+public class UserRegistrationResponse extends ApiResponse {
 }

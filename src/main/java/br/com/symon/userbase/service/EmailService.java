@@ -2,7 +2,6 @@ package br.com.symon.userbase.service;
 
 import br.com.symon.userbase.model.api.ValidationError;
 import br.com.symon.userbase.model.api.ValidationResult;
-import br.com.symon.userbase.model.api.ValidationErrorCode;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -13,10 +12,10 @@ public class EmailService {
     public Mono<ValidationResult> validateEmail(String email) {
         ValidationResult result = ValidationResult.builder().build();
         if (!StringUtils.hasLength(email)) {
-            result.getErrors().add(ValidationError.builder().code(ValidationErrorCode.EMAIL_NOT_PROVIDED).message("Email é obrigatório").build());
+            result.getErrors().add(ValidationError.EMAIL_NOT_PROVIDED);
         }
         if (!EmailValidator.getInstance().isValid(email)) {
-            result.getErrors().add(ValidationError.builder().code(ValidationErrorCode.EMAIL_INVALID).message("Email inválido").build());
+            result.getErrors().add(ValidationError.EMAIL_INVALID);
         }
         return Mono.just(result);
     }

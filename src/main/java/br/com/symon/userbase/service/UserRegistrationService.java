@@ -1,7 +1,7 @@
 package br.com.symon.userbase.service;
 
 import br.com.symon.userbase.dto.request.UserRegistration;
-import br.com.symon.userbase.model.api.User;
+import br.com.symon.userbase.model.User;
 import br.com.symon.userbase.model.api.ValidationError;
 import br.com.symon.userbase.model.api.ValidationErrorCode;
 import br.com.symon.userbase.model.api.ValidationResult;
@@ -25,15 +25,15 @@ public class UserRegistrationService {
 
     public Mono<ValidationResult> validateRegistration(UserRegistration userRegistration) {
         return Mono.just(ValidationResult.builder().build())
-                .flatMap(validationResult -> emailService.validateEmail(userRegistration.getEmail()))
-                .flatMap(validationResult -> passwordService.validatePassword(userRegistration.getPassword()));
+                .flatMap(validationResult -> emailService.validateEmail(userRegistration.email()))
+                .flatMap(validationResult -> passwordService.validatePassword(userRegistration.password()));
     }
 
     public Mono<Void> validateDuplicateUser(UserRegistration userRegistrationRequest) {
-        return Mono.error(ValidationError.builder().message("Usuário já existe com email xyz...").code(ValidationErrorCode.DUPLICATED_USER).build());
+        return Mono.error(ValidationError.DUPLICATED_USER);
     }
 
-    public Mono<User> saveUser(UserRegistration userRegistrationRequest) {
-        return Mono.just(User.builder().id(UUID.randomUUID().toString()).build());
+    public Mono<User> saveUser(User user) {
+        return Mono.just(user);
     }
 }

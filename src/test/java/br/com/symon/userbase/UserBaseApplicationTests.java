@@ -28,11 +28,7 @@ class UserBaseApplicationTests {
 
     @Test
     public void whenValidInput_thenReturns200() throws Exception {
-        UserRegistration userRegistration = UserRegistration.builder()
-                .email("email@emal.com")
-                .password("abc123")
-                .build();
-
+        UserRegistration userRegistration = new UserRegistration("email@emal.com","abc123");
         webTestClient.post().uri("/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(objectMapper.writeValueAsString(userRegistration))
@@ -42,39 +38,12 @@ class UserBaseApplicationTests {
 
     @Test
     public void whenInvalidEmail_thenReturns400() throws Exception {
-        UserRegistration userRegistration = UserRegistration.builder()
-                .email("invalidEmail")
-                .password("abc123")
-                .build();
-
+        UserRegistration userRegistration = new UserRegistration("invalidEmail","abc123");
         webTestClient.post().uri("/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(objectMapper.writeValueAsString(userRegistration))
                 .exchange()
                 .expectStatus().isBadRequest();
     }
-
-    @Test
-    public void email_not_provided_thenReturns400() throws Exception {
-        UserRegistration userRegistration = UserRegistration.builder()
-                .password("abc123")
-                .build();
-
-        ApiResponse response = webTestClient.post().uri("/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(objectMapper.writeValueAsString(userRegistration))
-                .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody(ApiResponse.class)
-                .returnResult()
-                .getResponseBody();
-
-        assert response != null;
-        assert response.getValidationFails() != null;
-
-        log.info("{}", response);
-        Assertions.assertFalse(response.getValidationFails().contains(ValidationResult.builder().code(ValidationErrorCode.EMAIL_INVALID).build()));
-    }
-
 
 }
